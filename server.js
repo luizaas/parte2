@@ -6,7 +6,7 @@ const uri = "mongodb+srv://user1:senha@cluster0-jfusq.gcp.mongodb.net/test?retry
 const mongoose = require('mongoose');
 const session = require('express-session');
 const cookie = require('cookie-parser');
-//var cookies = require('browser-cookies');
+
 
 app.set('view engine','ejs')
 app.use(cookie());
