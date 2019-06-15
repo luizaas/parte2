@@ -23,23 +23,21 @@
 				ou visitar o mundo de outros usuários.
 		</div>
 
-		<div id="logar" class="exibir">
-			<form action="/login" method="POST">
+		<div id="cadastrar" class="exibir">
+			<form action="/cadastrar" method="POST">
+				<label for="email">E-mail</label>
+				<input id="email" type="email" name="email">
 				<label for="usuario" >Usuario</label>
 				<input id="usuario" type="text"  name="usuario">
 				<label for="senha">Senha</label>
 				<input id="senha" type="password" name="senha">
-			  	<button type="submit" >Logar</button>
+			  <button type="submit" >Cadastrar</button>
 			</form>
-			<span id="esqueci-senha" >
-				<a href="#">Esqueci minha senha</a>
-			</span>
-			<span id="quer-cadastrar" >
-				Não tem uma conta?
-				<button><a href="/cadastrar">Cadastrar</a></button>
+			<span id="tem-cadastro" >
+				Já tem uma conta?
+				<button><a href="/login">Logar</a></button>
 			</span>
 		</div>
-
 	</main>
 
 	<footer>

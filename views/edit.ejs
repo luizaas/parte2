@@ -10,14 +10,15 @@
    
         <% data.forEach(function(details) { %>
             <form action="/edit/<%= details._id %>" method ="POST">
-                <input type="text" value="<%= details.id %>" name="id"/>
-                <td><%= details.email %></td>
-                <td><%= details.usuario %></td>
-                <td><%= details.senha %></td>
-                <td><a href="/edit/<%= details._id %>">Editar</a><a href="/delete/<%= details._id %>">Deletar</a></td>
-            </tr>
+                <input type="number" value="<%= details.id %>" name="id"/>
+                <input type="text" value="<%= details.email %>" name="email"/>
+                <input type="text" value="<%= details.usuario %>" name="usuario"/>
+                <input type="text" value="<%= details.senha %>" name="senha"/>
+                <button><a href="/show">todos</a></button>
+                <button type="submit">salvar</a></button>
+            </form>
+
             <% }) %>
-        </tbody>
-        <button><a href="/">Voltar</a></button>
+        
 </body>
 </html>
