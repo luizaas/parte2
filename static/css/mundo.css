@@ -1,0 +1,148 @@
+body { 
+  position: relative;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  background-color: white;
+}
+
+main {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#widgets {
+  visibility: hidden;
+  background-image: url("../Sprites/painel.jpg");
+  background-repeat: round;
+  border-radius: 2vh;
+  width: 15%;
+  height: 57.5%;
+  margin: 2% 1%;
+  padding: 0;  
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.widgets_container {
+  margin-top: 10%;
+  margin-bottom: 10%;
+  height: 70%; 
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.widget, #salvar_alteracoes {
+  color: black;
+  transition: background-color 0.3s;
+  margin: auto;
+  background-color: white;
+  border: solid 2% grey;
+  display: block;
+  align-items: center;
+  justify-content: center;
+}
+
+.widget {  
+  height: 15%;
+  width: 40%;
+}
+
+#salvar_alteracoes {
+  margin-top: 5%;
+  margin-bottom: 5%;
+  height: 11%;
+  width: 65%;
+  text-align: center;
+}
+
+.objeto {
+  box-sizing: border-box;
+  position:   absolute;
+}
+
+form {
+  width: 98%;
+  border-radius: 2vh;
+  margin: auto;
+  padding: 2%;
+}
+
+label {
+  font-size: 2vh;
+}
+
+input {
+  display: block;
+  width: 100%;
+  margin: 0% auto 4% auto;
+  border-radius: 2vh;
+  height: 2.5vh;
+}
+
+input[type="color"] {
+  width: 30%;
+}
+
+#chao {  
+  background-image: url();
+  width: 100%;
+}
+
+#alterar {
+  margin-top: 10%;
+  margin-left: auto;
+  margin-right: auto;
+  height: 12%;
+}
+
+#excluir {  
+  margin-top: 10%;
+  margin-left: auto;
+  margin-right: auto;
+  height: 12%;
+  width: 50%;
+  background-color: black;
+  color: white;
+}
+
+#formulario-propriedades {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  height: 100%;
+}
+
+.seta-direita-galeria {
+  position: absolute;
+  right: -20px;
+  bottom: 0px;
+}
+
+.seta-esquerda-galeria {
+  position: absolute;
+  left: -15px;
+  bottom: 0px;
+}
+
+.input{
+  border-radius: 1vh;
+  margin: 0% auto 4% auto;
+  border: 1px solid gray;
+  outline: none;
+  background-color: white;
+  overflow:scroll;
+  max-height: 15vh;
+  display: none;
+}
+
+.div-in{
+  position: absolute;
+}
