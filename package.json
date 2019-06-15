@@ -4,15 +4,20 @@
   "description": "parte 2",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.4",
     "ejs": "^2.6.1",
     "express": "^4.17.1",
+    "express-session": "^1.16.2",
     "mongodb": "^3.2.7",
     "mongoose": "^5.6.0"
-  }
+  },
+  "devDependencies": {},
+  "keywords": []
 }

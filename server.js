@@ -4,14 +4,17 @@ const bodyParser=require('body-parser')
 const MongoClient = require('mongodb').MongoClient 
 const uri = "mongodb+srv://user1:senha@cluster0-jfusq.gcp.mongodb.net/test?retryWrites=true&w=majority"
 const mongoose = require('mongoose');
-
+const session = require('express-session');
+const cookie = require('cookie-parser');
 
 app.set('view engine','ejs')
+app.use(cookie());
 app.use('/static', express.static('static')) //NAO TOQUE
 app.use(bodyParser.urlencoded({extended:true}))
+//app.use(session({secret: 'secret',saveUninitialized: true,resave: true}));
 
 var ObjectID = require('mongodb').ObjectID;
-
+var sess;//salva essa tralha nos temp do navegador
 MongoClient.connect(uri,(err,client)=>{
 	if(err) return console.log(err)
 	bd=client.db("craft")
@@ -23,15 +26,18 @@ MongoClient.connect(uri,(err,client)=>{
 app.get('/', (req, res) => {
     res.render('index.ejs')
     var usuario = bd.collection('usuario').find()
+    /*sess=req.session; //pegar do navegador?
+    sess.id;
+    sess.alien;*/
 })
 
-app.get('/', (req, res) => {
+/*app.get('/', (req, res) => {
     var cursor = bd.collection('usuario').find()
     console.log(cursor)
 })
 
 
-/*app.get('/',(req,res)=>{
+app.get('/',(req,res)=>{
 	var cursor =bd.collection('data').find()
 	res.render('index.ejs')
 })*/
@@ -39,36 +45,71 @@ app.get('/show', (req, res) => { //cata do bd
     bd.collection('usuario').find().toArray((err, results) => {
 
         if (err) return console.log(err)
-        console.log(results)
         res.render('show.ejs', { data: results })
     })
 })
+app.get('/login', (req, res) => { //pagina do login
 
-app.get('/login', (req, res) => { //cata do bd
     res.render('index.ejs')
 })
-app.post('/login', (req, res) => { //cata do bd
-    console.log("Faz login")
+app.post('/login', (req, res) => { //fazer login
+	var query = { usuario: req.body.usuario };
+	bd.collection('usuario').find(query)
+	.toArray((err, result) => {
+       if (err) return console.log(err)
+       console.log(result)
+       if(result.length==0) {
+	       	console.log("Nao exite o usuario")
+	       	res.redirect("/login");
+	       	return;
+   		}
+		if(result[0].senha==req.body.senha){
+			console.log("Senha correta")
+			var d= "*"+result[0].id+"*"+result[0].alien
+			res.cookie("usuario",d)
+			res.redirect("/mundo/"+result[0].id);
+		}
+		else{
+			console.log("Senha errada")
+			res.redirect("/login");
+		}
+	})
 })
-app.get('/cadastrar', (req, res) => { //cata do bd
+app.get('/mundo/:idb',(req,res)=>{
+	let id= req.params.idb
+	let query = { id: parseInt(id) };
+	bd.collection('usuario').find(query)
+		.toArray((err, result) => {
+	       if (err) return console.log(err)
+	       if(result.length==0) {
+		       	console.log("ERRO")
+		        return;
+	   		}
+	   		alien=result[0].alien;
+	   		res.cookie("alienMundo",alien)
+			res.render('mundo.ejs')
+	})
+	
+})
+
+app.get('/cadastrar', (req, res) => { //pagina do cadastro
     res.render('cadastro.ejs')
 })
 app.post('/cadastrar', (req, res) => { //cadastrar
     bd.collection('usuario').find().toArray((err, results) => {
        if (err) return console.log(err)
-
        maior=0
        for (var i= results.length - 1; i >= 0; i--) {
       		if(results[i].id > maior)
       			maior=results[i].id  
        }
-	    console.log(maior)
-	    req.body.id =  parseInt(maior) +1;
-	    console.log(req.body.id)
+	    req.body.id = parseInt(maior) +1;
+	    req.body.mundo=""
+	    req.body.alien="blue"
 	    bd.collection('usuario').save(req.body,(err,result)=>{
-		if(err) return console.log(err)
-		console.log("Salvo no BD")
-		res.redirect('/login')
+			if(err) return console.log(err)
+			console.log("Salvo no BD")
+			res.redirect('/login')
 		})
     })
 	
