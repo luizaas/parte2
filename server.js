@@ -6,6 +6,7 @@ const uri = "mongodb+srv://user1:senha@cluster0-jfusq.gcp.mongodb.net/test?retry
 const mongoose = require('mongoose');
 const session = require('express-session');
 const cookie = require('cookie-parser');
+//var cookies = require('browser-cookies');
 
 app.set('view engine','ejs')
 app.use(cookie());
@@ -24,8 +25,9 @@ MongoClient.connect(uri,(err,client)=>{
 })
 
 app.get('/', (req, res) => {
-    res.render('index.ejs')
+    //res.render('index.ejs')
     var usuario = bd.collection('usuario').find()
+    res.redirect('/login')
     /*sess=req.session; //pegar do navegador?
     sess.id;
     sess.alien;*/
@@ -50,8 +52,21 @@ app.get('/show', (req, res) => { //cata do bd
 })
 app.get('/login', (req, res) => { //pagina do login
 
-    res.render('index.ejs')
+	if(req.cookies.usuario==''||req.cookies.usuario==undefined){
+		console.log("Nao tem user ainda")
+		res.render('index.ejs')
+	}else{
+		var usuario = req.cookies.usuario.split("*")[1]
+		console.log("Tem user: "+usuario)
+		res.redirect("/mundo/"+usuario);
+	}
+    
 })
+app.get('/logout', (req, res) => { //logout
+	res.cookie("usuario","")
+    res.redirect('/login')
+})
+
 app.post('/login', (req, res) => { //fazer login
 	var query = { usuario: req.body.usuario };
 	bd.collection('usuario').find(query)
@@ -59,8 +74,7 @@ app.post('/login', (req, res) => { //fazer login
        if (err) return console.log(err)
        console.log(result)
        if(result.length==0) {
-	       	console.log("Nao exite o usuario")
-	       	res.redirect("/login");
+       		res.redirect('/erro/Nao existe o usuario')
 	       	return;
    		}
 		if(result[0].senha==req.body.senha){
@@ -70,8 +84,8 @@ app.post('/login', (req, res) => { //fazer login
 			res.redirect("/mundo/"+result[0].id);
 		}
 		else{
+			res.redirect('/erro/Senha Errada')
 			console.log("Senha errada")
-			res.redirect("/login");
 		}
 	})
 })
@@ -82,7 +96,8 @@ app.get('/mundo/:idb',(req,res)=>{
 		.toArray((err, result) => {
 	       if (err) return console.log(err)
 	       if(result.length==0) {
-		       	console.log("ERRO")
+	       		res.redirect('/erro/Mundo nao Existe')
+		       	//console.log("ERRO")
 		        return;
 	   		}
 	   		alien=result[0].alien;
@@ -116,7 +131,7 @@ app.post('/cadastrar', (req, res) => { //cadastrar
 })
 
 
-app.post('/show',(req,res)=>{ //salva no bd
+/*app.post('/show',(req,res)=>{ //salva no bd
 	bd.collection('usuario').find().toArray((err, results) => {
        if (err) return console.log(err)
 
@@ -135,7 +150,7 @@ app.post('/show',(req,res)=>{ //salva no bd
 		})
     })
 	
-})
+})*/
 
 //atualizar no bd
 app.route('/edit/:idb')
@@ -182,5 +197,6 @@ app.route('/delete/:idb')
 		.catch(err=> console.log( res.send(500,err)))
 	})
 
-
-
+app.get('/erro/:msg', (req, res) => { //pagina do cadastro
+    res.render('erro.ejs',{data:req.params.msg})
+})
