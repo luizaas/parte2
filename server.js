@@ -44,7 +44,19 @@ app.get('/login', (req, res) => { //pagina do login
 	}else{
 		var usuario = req.cookies.usuario.split("*")[1]
 		console.log("Tem user: "+usuario)
-		res.redirect("/mundo/"+usuario);
+		let query = { id: parseInt(usuario) };
+		bd.collection('usuario').find(query)
+		.toArray((err, result) => {
+	       if (err) return console.log(err)
+	       if(result.length==0) {
+	       		res.render('index.ejs')
+		        return;
+	   		}
+	   		var d= "*"+usuario+"*"+result[0].alien
+	   		res.cookie("usuario",d);
+			res.redirect("/mundo/"+usuario);
+		})
+
 	}
     
 })
@@ -90,6 +102,7 @@ app.get('/mundo/:idb',(req,res)=>{
 	   		res.cookie("alienMundo",alien)
 			res.render('mundo.ejs')
 	})
+
 	
 })
 
@@ -115,14 +128,22 @@ app.post('/cadastrar', (req, res) => { //cadastrar
 	    	galerias:{},
 	    	icon:null
 	    }
-	    console.log(mundo)
+	    cena={
+	    	id:req.body.id,
+	    	backgroundTexture:"",
+			backgroundColor:"",
+			floorTexture:""
+	    }
 	    req.body.alien="blue"
-	    console.log(req.body)
 	    bd.collection('usuario').save(req.body,(err,result)=>{
 			if(err) return console.log(err)
 			bd.collection('mundo').save(mundo,(err,result)=>{
 				if(err) return console.log(err)
 				console.log("Salvo no mundo")
+			})
+			bd.collection('cena').save(mundo,(err,result)=>{
+				if(err) return console.log(err)
+				console.log("Salvo no cena")
 			})
 			console.log("Salvo no BD")
 			res.redirect('/login')
@@ -131,7 +152,7 @@ app.post('/cadastrar', (req, res) => { //cadastrar
 	
 })
 
-app.route('/teste').post((req,res)=>{
+app.route('/salvarmundo').post((req,res)=>{
 	var dados=new Object()
 	dados.id = parseInt(req.body.id)
 	dados.num_imagens=req.body.num_imagens
@@ -175,8 +196,6 @@ app.route('/teste').post((req,res)=>{
 	}
 	//console.log(dados)
 	var query = { id: parseInt(req.body.id) };
-	console.log(query)
-	console.log(dados.id)
 	bd.collection('mundo').deleteOne(query)
 		.then((result)=>{
 			console.log("Deletou: "+result.deletedCount)
@@ -185,6 +204,41 @@ app.route('/teste').post((req,res)=>{
 					if(err) return console.log(err)
 					console.log("Alteraçoes salvas!")
 				})
+			}else{
+				console.log("Pq diacho nao ta apagando?")
+			}
+		}).catch(err=> console.log( res.send(500,err)))
+
+})
+app.route('/salvarcena').post((req,res)=>{
+	var dados=new Object()
+	dados.id = parseInt(req.body.id)
+	dados.backgroundTexture=req.body.backgroundTexture
+	dados.backgroundColor=req.body.backgroundColor
+	dados.floorTexture=req.body.floorTexture
+	var color=req.body.userColor
+	var query = { id: parseInt(req.body.id) };
+	
+
+	bd.collection('cena').deleteOne(query)
+		.then((result)=>{
+			console.log("Deletou: "+result.deletedCount)
+			if(result.deletedCount>0){
+				bd.collection('cena').save(dados,(err,result)=>{
+					if(err) return console.log(err)
+					console.log("Alteraçoes salvas!")
+				})
+				bd.collection('usuario').updateOne(query,{
+					$set:{
+						alien:color
+					}
+				},(err,result)=>{
+					if(err) return res.send(err)
+					console.log("Atualizou a cor do alien")
+					console.log(res.cookie)
+					res.redirect('/login')
+				})
+				
 			}else{
 				console.log("Pq diacho nao ta apagando?")
 			}

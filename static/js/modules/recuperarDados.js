@@ -118,6 +118,7 @@ export function recuperarDadosPainel(){
 export function recuperarDadosCena(){
 	let Dados = new Object();
 	let cookie=document.cookie.split(";")
+	console.log(cookie)
 	let user;
 	var idUsuario=-1;
 	var CorAlienUsuario="";
@@ -126,7 +127,7 @@ export function recuperarDadosCena(){
 		if(cookie[i].indexOf("usuario=")==1){
 			user=cookie[i].split("*")
 			idUsuario=user[1]
-			//console.log("USER ATUAL: "+idUsuario)
+			console.log("USER ATUAL: "+idUsuario)
 			CorAlienUsuario=user[2]
 		}
 		if(cookie[i].indexOf("alienMundo=")==1){
@@ -137,7 +138,7 @@ export function recuperarDadosCena(){
 	let idMundo=url[url.length-1]
 	console.log("ID MUNDO:"+idMundo)
 	Dados.userColor=CorAlienUsuario;
-
+	console.log("Cor ATUAL: "+CorAlienUsuario)
 	if(idUsuario==-1||idUsuario==undefined){
 		Dados.userColor=CorAlienMundo;
 		Dados.visitorColor = "green";

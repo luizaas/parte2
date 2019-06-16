@@ -45,7 +45,7 @@ export function salvarDadosPortifolio(Dados){
    // document.getElementById("formMundo").submit();
     $.ajax({
         type: 'POST',
-        url: '/teste', // This one is missing here
+        url: '/salvarmundo', // This one is missing here
         data: data
     }).done(function(msg){
         console.log(msg); // log here 
@@ -53,12 +53,26 @@ export function salvarDadosPortifolio(Dados){
 }
 
 export function salvarDadosCena(Dados){
+	var data=new Object()
+	let url= window.location.href.split("/")
+	data.id=url[url.length-1]
 	localStorage.setItem("backgroundTexture", Dados.backgroundTexture);
+	data.backgroundTexture=Dados.backgroundTexture
 	localStorage.setItem("backgroundColor", Dados.backgroundColor);
+	data.backgroundColor=Dados.backgroundColor
 	localStorage.setItem("floorTexture", Dados.floorTexture);
-	localStorage.setItem("myPage", Dados.myPage);
+	data.floorTexture=Dados.floorTexture
 	localStorage.setItem("userColor", Dados.userColor);
-	localStorage.setItem("visitorColor", Dados.visitorColor);
+	data.userColor=Dados.userColor
+
+
+	$.ajax({
+        type: 'POST',
+        url: '/salvarcena', // This one is missing here
+        data: data
+    }).done(function(msg){
+        console.log(msg); // log here 
+    });
 }
 
 
