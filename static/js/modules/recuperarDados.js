@@ -133,7 +133,7 @@ export function recuperarDadosCena(){
 			CorAlienMundo=cookie[i].split("=")[1]
 		}
 	}
-	let url= currentLocation.href.split("/")
+	let url= window.location.href.split("/")
 	let idMundo=url[url.length-1]
 	console.log("ID MUNDO:"+idMundo)
 	Dados.userColor=CorAlienUsuario;

@@ -7,15 +7,13 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const cookie = require('cookie-parser');
 
-
 app.set('view engine','ejs')
 app.use(cookie());
 app.use('/static', express.static('static')) //NAO TOQUE
 app.use(bodyParser.urlencoded({extended:true}))
-//app.use(session({secret: 'secret',saveUninitialized: true,resave: true}));
 
 var ObjectID = require('mongodb').ObjectID;
-var sess;//salva essa tralha nos temp do navegador
+
 MongoClient.connect(uri,(err,client)=>{
 	if(err) return console.log(err)
 	bd=client.db("craft")
@@ -25,24 +23,12 @@ MongoClient.connect(uri,(err,client)=>{
 })
 
 app.get('/', (req, res) => {
-    //res.render('index.ejs')
-    var usuario = bd.collection('usuario').find()
+    var usuario = bd.collection('usuario').find() //nao sei se é necessario 
+    var usuario = bd.collection('mundo').find()
     res.redirect('/login')
-    /*sess=req.session; //pegar do navegador?
-    sess.id;
-    sess.alien;*/
+    
 })
 
-/*app.get('/', (req, res) => {
-    var cursor = bd.collection('usuario').find()
-    console.log(cursor)
-})
-
-
-app.get('/',(req,res)=>{
-	var cursor =bd.collection('data').find()
-	res.render('index.ejs')
-})*/
 app.get('/show', (req, res) => { //cata do bd
     bd.collection('usuario').find().toArray((err, results) => {
 
@@ -119,10 +105,25 @@ app.post('/cadastrar', (req, res) => { //cadastrar
       			maior=results[i].id  
        }
 	    req.body.id = parseInt(maior) +1;
-	    req.body.mundo=""
+	    mundo={
+	    	id:req.body.id,
+	    	num_imagens:0,
+	    	num_textos:0,
+	    	num_videos:0,
+	    	num_musicas:0,
+	    	num_galerias:0,
+	    	galerias:{},
+	    	icon:null
+	    }
+	    console.log(mundo)
 	    req.body.alien="blue"
+	    console.log(req.body)
 	    bd.collection('usuario').save(req.body,(err,result)=>{
 			if(err) return console.log(err)
+			bd.collection('mundo').save(mundo,(err,result)=>{
+				if(err) return console.log(err)
+				console.log("Salvo no mundo")
+			})
 			console.log("Salvo no BD")
 			res.redirect('/login')
 		})
@@ -130,30 +131,68 @@ app.post('/cadastrar', (req, res) => { //cadastrar
 	
 })
 
-
-/*app.post('/show',(req,res)=>{ //salva no bd
-	bd.collection('usuario').find().toArray((err, results) => {
-       if (err) return console.log(err)
-
-       maior=0
-       for (var i= results.length - 1; i >= 0; i--) {
-      		if(results[i].id > maior)
-      			maior=results[i].id  
-       }
-	    console.log(maior)
-	    req.body.id =  parseInt(maior) +1;
-	    console.log(req.body.id)
-	    bd.collection('usuario').save(req.body,(err,result)=>{
-		if(err) return console.log(err)
-		console.log("Salvo no BD")
-		res.redirect('/show')
-		})
-    })
+app.route('/teste').post((req,res)=>{
+	var dados=new Object()
+	dados.id = parseInt(req.body.id)
+	dados.num_imagens=req.body.num_imagens
+	dados.num_galerias=req.body.num_galerias
+	dados.num_musicas=req.body.num_musicas
+	dados.num_textos=req.body.num_textos
+	dados.num_videos=req.body.num_videos
 	
-})*/
+	dados.galerias=req.body.galerias
+	dados.icon=req.body.icon
+	//console.log(dados)
+	for (let i = 1; i <= Number(dados.num_imagens); i++) {
+		var nome="imagem_"+i+"_outerHTML"
+		dados[nome]=req.body[nome]
+		nome="imagem_"+i+"_innerHTML"
+		dados[nome]=req.body[nome]
+	}
+	for (let i = 1; i <= Number(dados.num_textos); i++) {
+		var nome="texto_"+i+"_outerHTML"
+		dados[nome]=req.body[nome]
+		nome="texto_"+i+"_innerHTML"
+		dados[nome]=req.body[nome]
+	}
+	for (let i = 1; i <= Number(dados.num_videos); i++) {
+		var nome="video_"+i+"_outerHTML"
+		dados[nome]=req.body[nome]
+		nome="video_"+i+"_innerHTML"
+		dados[nome]=req.body[nome]
+	}
+	for (let i = 1; i <= Number(dados.num_musicas); i++) {
+		var nome="musica_"+i+"_outerHTML"
+		dados[nome]=req.body[nome]
+		nome="musica_"+i+"_innerHTML"
+		dados[nome]=req.body[nome]
+	}
+	for (let i = 1; i <= Number(dados.num_galerias); i++) {
+		var nome="galeria_"+i+"_outerHTML"
+		dados[nome]=req.body[nome]
+		nome="galeria_"+i+"_innerHTML"
+		dados[nome]=req.body[nome]
+	}
+	//console.log(dados)
+	var query = { id: parseInt(req.body.id) };
+	console.log(query)
+	console.log(dados.id)
+	bd.collection('mundo').deleteOne(query)
+		.then((result)=>{
+			console.log("Deletou: "+result.deletedCount)
+			if(result.deletedCount>0){
+				bd.collection('mundo').save(dados,(err,result)=>{
+					if(err) return console.log(err)
+					console.log("Alteraçoes salvas!")
+				})
+			}else{
+				console.log("Pq diacho nao ta apagando?")
+			}
+		}).catch(err=> console.log( res.send(500,err)))
 
+})
 //atualizar no bd
-app.route('/edit/:idb')
+/*app.route('/edit/:idb')
 .get((req,res)=>{
 	var idd= req.params.idb
 	console.log(idd)
@@ -181,7 +220,7 @@ app.route('/edit/:idb')
 		console.log("Atualizouu")
 	})
 })
-
+*/
 app.route('/delete/:idb')
 .get((req,res)=>{
 	var id=req.params.idb
@@ -190,13 +229,16 @@ app.route('/delete/:idb')
 
 	bd.collection('usuario').deleteOne(query)
 		.then((result)=>{
-			console.log("Deletanduu")
-			console.log(result.deletedCount)
-			res.redirect("/show");
+			bd.collection('mundo').deleteOne(query)
+			.then((result)=>{
+				console.log("Deletanduu do mundo")
+				console.log(result.deletedCount)
+				res.redirect("/show");
+			}).catch(err=> console.log( res.send(500,err)))
 		})
 		.catch(err=> console.log( res.send(500,err)))
 	})
-
-app.get('/erro/:msg', (req, res) => { //pagina do cadastro
+//Erro
+app.get('/erro/:msg', (req, res) => {
     res.render('erro.ejs',{data:req.params.msg})
 })
