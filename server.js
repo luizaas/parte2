@@ -31,9 +31,8 @@ app.get('/', (req, res) => {
 
 app.get('/show', (req, res) => { //cata do bd
     bd.collection('usuario').find().toArray((err, results) => {
-
-        if (err) return console.log(err)
-        res.render('show.ejs', { data: results })
+    	 if (err) return console.log(err)
+		res.render('show.ejs', { data: results })
     })
 })
 app.get('/login', (req, res) => { //pagina do login
@@ -87,20 +86,143 @@ app.post('/login', (req, res) => { //fazer login
 		}
 	})
 })
+function pegarMundoBD(id){
+	let query = { id: parseInt(id) };
+	bd.collection('mundo').find(query).toArray((err, result) => {
+	       if (err) return console.log(err)
+	       if(result.length==0) {
+		       	console.log("ERRO")
+		        return;
+	   		}
+	   		console.log("PEGAR")
+	   		console.log(result)
+	   		console.log("**********")
+	   		result=result[0]
+	   		html="<div id=\"mundo\" class=\"resize-container\"> "
+	   		for (let i = 1; i <= parseInt(result["num_imagens"]); i++) {
+				outerHTML=result["imagem_"+i+"_outerHTML"]
+				outerHTML=outerHTML.replace("<img ","<img onclick=\"criarPropriedades() \"")
+				html+=outerHTML
+			}
+			for (let i = 1; i <= parseInt(result["num_textos"]); i++) {
+				outerHTML=result["texto_"+i+"_outerHTML"]
+				innerHTML=result["texto_"+i+"_innerHTML"]
+				outerHTML=outerHTML.replace("<textarea ","<textarea onclick=\"criarPropriedades() \"")
+				html+=outerHTML
+			}
+
+			for (let i = 1; i <= parseInt(result["num_videos"]); i++) {
+				outerHTML=result["video_"+i+"_outerHTML"]
+				innerHTML=result["video_"+i+"_innerHTML"]
+				outerHTML=outerHTML.replace("<div ","<div onclick=\"criarPropriedades() \"")
+				html+=outerHTML
+			}
+			
+			for (let i = 1; i <= parseInt(result["num_musicas"]); i++) {
+				outerHTML=result["musica_"+i+"_outerHTML"]
+				innerHTML=result["musica_"+i+"_innerHTML"]
+				outerHTML=outerHTML.replace("<div ","<div onclick=\"criarPropriedades() \"")
+				html+=outerHTML
+			}
+			
+			for (let i = 1; i <= parseInt(result["num_galerias"]); i++) {
+				outerHTML=result["galeria_"+i+"_outerHTML"]
+				innerHTML=result["galeria_"+i+"_innerHTML"]
+				outerHTML=outerHTML.replace("<div ","<div onclick=\"criarPropriedades() \"")
+				html+=outerHTML
+			}
+
+			html+="</div>"
+	   		console.log(html)
+	   		let htmlMundo=html
+
+	})
+}
+	   		/*html=""
+	   		console.log("**********")
+	   		console.log("**********")
+	   		bd.collection('cena').find(query).toArray((err, result) => {
+	   			if (err) return console.log(err)
+		        if(result.length==0) {
+			       	console.log("ERRO")
+			        return;
+		   		}
+		   		console.log(html)
+		   		console.log(result)
+	   			console.log("**********")
+	   		})*/
 app.get('/mundo/:idb',(req,res)=>{
 	let id= req.params.idb
+	
+	//console.log(r)
 	let query = { id: parseInt(id) };
 	bd.collection('usuario').find(query)
 		.toArray((err, result) => {
 	       if (err) return console.log(err)
 	       if(result.length==0) {
 	       		res.redirect('/erro/Mundo nao Existe')
-		       	//console.log("ERRO")
 		        return;
 	   		}
 	   		alien=result[0].alien;
 	   		res.cookie("alienMundo",alien)
-			res.render('mundo.ejs')
+
+	   		bd.collection('mundo').find(query).toArray((err, result) => {
+	      	if (err) return console.log(err)
+	        if(result.length==0) {
+		       	console.log("ERRO")
+		        return;
+	   		}
+	   		console.log("PEGAR")
+	   		console.log(result[0])
+	   		console.log("**********")
+	   		html=result[0].html
+
+	   		/*html="<div id=\"mundo\" class=\"resize-container\"> "
+	   		for (let i = 1; i <= parseInt(result["num_imagens"]); i++) {
+				outerHTML=result["imagem_"+i+"_outerHTML"]
+				//outerHTML=outerHTML.replace("<img ","<img onclick=\"criarPropriedades() \"")
+				html+=outerHTML
+			}
+			for (let i = 1; i <= parseInt(result["num_textos"]); i++) {
+				outerHTML=result["texto_"+i+"_outerHTML"]
+				innerHTML=result["texto_"+i+"_innerHTML"]
+				//outerHTML=outerHTML.replace("<textarea ","<textarea onclick=\"criarPropriedades() \"")
+				html+=outerHTML
+			}
+
+			for (let i = 1; i <= parseInt(result["num_videos"]); i++) {
+				outerHTML=result["video_"+i+"_outerHTML"]
+				innerHTML=result["video_"+i+"_innerHTML"]
+				//outerHTML=outerHTML.replace("<div ","<div onclick=\"criarPropriedades() \"")
+				html+=outerHTML
+			}
+			
+			for (let i = 1; i <= parseInt(result["num_musicas"]); i++) {
+				outerHTML=result["musica_"+i+"_outerHTML"]
+				innerHTML=result["musica_"+i+"_innerHTML"]
+				//outerHTML=outerHTML.replace("<div ","<div onclick=\"criarPropriedades() \"")
+				html+=outerHTML
+			}
+			
+			for (let i = 1; i <= parseInt(result["num_galerias"]); i++) {
+				outerHTML=result["galeria_"+i+"_outerHTML"]
+				innerHTML=result["galeria_"+i+"_innerHTML"]
+				//outerHTML=outerHTML.replace("<div ","<div onclick=\"criarPropriedades() \"")
+				html+=outerHTML
+			}
+
+			html+=" </div>"
+	   		console.log(html)*/
+	   		let htmlMundo=html
+	   		data={htmlMundo:htmlMundo,teste:"teste"}
+	   		console.log(data)
+	   		
+			res.render('mundo.ejs',{data:data})
+
+		})
+
+
+	   		
 	})
 
 	
@@ -120,12 +242,7 @@ app.post('/cadastrar', (req, res) => { //cadastrar
 	    req.body.id = parseInt(maior) +1;
 	    mundo={
 	    	id:req.body.id,
-	    	num_imagens:0,
-	    	num_textos:0,
-	    	num_videos:0,
-	    	num_musicas:0,
-	    	num_galerias:0,
-	    	galerias:{},
+	    	html:"<div id=\"mundo\" class=\"resize-container\"></div>",
 	    	icon:null
 	    }
 	    cena={
@@ -141,7 +258,7 @@ app.post('/cadastrar', (req, res) => { //cadastrar
 				if(err) return console.log(err)
 				console.log("Salvo no mundo")
 			})
-			bd.collection('cena').save(mundo,(err,result)=>{
+			bd.collection('cena').save(cena,(err,result)=>{
 				if(err) return console.log(err)
 				console.log("Salvo no cena")
 			})
@@ -153,9 +270,14 @@ app.post('/cadastrar', (req, res) => { //cadastrar
 })
 
 app.route('/salvarmundo').post((req,res)=>{
+	console.log("SALVAR")
+	console.log(req.body)
+	console.log("SALVAR")
 	var dados=new Object()
 	dados.id = parseInt(req.body.id)
-	dados.num_imagens=req.body.num_imagens
+	dados.html=req.body.html
+	dados.icon=req.body.icon
+	/*dados.num_imagens=req.body.num_imagens
 	dados.num_galerias=req.body.num_galerias
 	dados.num_musicas=req.body.num_musicas
 	dados.num_textos=req.body.num_textos
@@ -193,8 +315,8 @@ app.route('/salvarmundo').post((req,res)=>{
 		dados[nome]=req.body[nome]
 		nome="galeria_"+i+"_innerHTML"
 		dados[nome]=req.body[nome]
-	}
-	//console.log(dados)
+	}*/
+	console.log(dados)
 	var query = { id: parseInt(req.body.id) };
 	bd.collection('mundo').deleteOne(query)
 		.then((result)=>{

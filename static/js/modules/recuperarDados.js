@@ -5,12 +5,15 @@ export function setPageIcon(url){
     link.type = 'image/x-icon';
     link.rel = 'shortcut icon';
     link.href = url
-    document.getElementsByTagName('head')[0].appendChild(link);    
+    document.getElementsByTagName('head')[0].appendChild(link);  
+    console.log(document.getElementsByTagName('head')[0])  
+    console.log(link)
 }
 
 export function recuperarDadosPainel(){
 	let Dados = new Object();
-	Dados.num_imagens = localStorage.getItem("num_imagens");
+	Dados.icon = localStorage.getItem("icon");
+	/*Dados.num_imagens = localStorage.getItem("num_imagens");
 	Dados.num_textos = localStorage.getItem("num_textos");
 	Dados.num_videos = localStorage.getItem("num_videos");
 	Dados.num_musicas = localStorage.getItem("num_musicas");
@@ -42,7 +45,7 @@ export function recuperarDadosPainel(){
 
 	if(Dados.backgroundTexture != null && Dados.backgroundTexture != "null" && Dados.backgroundTexture != "undefined"){
 		let background = document.querySelector("#fundo");
-		background.style.backgroundImage = "url(\"Sprites/floor_textures/" + Dados.backgroundTexture + "\")";
+		background.style.backgroundImage = "url(\"../static/Sprites/floor_textures/" + Dados.backgroundTexture + "\")";
 		background.style.backgroundColor = "none";
 	}
 	
@@ -55,7 +58,7 @@ export function recuperarDadosPainel(){
 	Dados.floorTexture = localStorage.getItem("floorTexture");
 	if(Dados.floorTexture != null && Dados.floorTexture != "null" && Dados.floorTexture != "undefined"){	
 		let chao = document.getElementById("chao");
-		chao.style.backgroundImage = "url(\"Sprites/floor_textures/" + Dados.floorTexture + "\")";
+		chao.style.backgroundImage = "url(\"../static/Sprites/floor_textures/" + Dados.floorTexture + "\")";
 	}
 
 	let mundo = document.querySelector("#mundo");
@@ -65,12 +68,20 @@ export function recuperarDadosPainel(){
 		objeto.outerHTML = localStorage.getItem("imagem-"+i+"_outerHTML");
 		objeto.innerHTML = localStorage.getItem("imagem-"+i+"_innerHTML");
 		objeto.addEventListener('click', criarPropriedades);
+		console.log("IMG")
+		console.log(objeto)
+		console.log("MUNDO")
+		console.log(mundo)
 	}
 	for (let i = 1; i <= Number(Dados.num_textos); i++) {
 		let objeto = document.createElement("textarea");
 		mundo.appendChild(objeto);
 		objeto.outerHTML = localStorage.getItem("texto-"+i+"_outerHTML");
 		objeto.innerHTML = localStorage.getItem("texto-"+i+"_innerHTML");
+		console.log("TEXTO")
+		console.log(objeto)
+		console.log("MUNDO")
+		console.log(mundo)
 		objeto.addEventListener('click', criarPropriedades);
 	}
 	for (let i = 1; i <= Number(Dados.num_videos); i++) {
@@ -78,6 +89,10 @@ export function recuperarDadosPainel(){
 		mundo.appendChild(objeto);
 		objeto.outerHTML = localStorage.getItem("video-"+i+"_outerHTML");
 		objeto.innerHTML = localStorage.getItem("video-"+i+"_innerHTML");
+		console.log("VIDEO")
+		console.log(objeto)
+		console.log("MUNDO")
+		console.log(mundo)
 		objeto.addEventListener('click', criarPropriedades);
 	}
 	for (let i = 1; i <= Number(Dados.num_musicas); i++) {
@@ -85,6 +100,10 @@ export function recuperarDadosPainel(){
 		mundo.appendChild(objeto);
 		objeto.outerHTML = localStorage.getItem("musica-"+i+"_outerHTML");
 		objeto.innerHTML = localStorage.getItem("musica-"+i+"_innerHTML");
+		console.log("MUSICA")
+		console.log(objeto)
+		console.log("MUNDO")
+		console.log(mundo)
 		objeto.addEventListener('click', criarPropriedades);
 	}
 	for (let i = 1; i <= Number(Dados.num_galerias); i++) {
@@ -92,9 +111,20 @@ export function recuperarDadosPainel(){
 		mundo.appendChild(objeto);
 		objeto.outerHTML = localStorage.getItem("galeria-"+i+"_outerHTML");
 		objeto.innerHTML = localStorage.getItem("galeria-"+i+"_innerHTML");
+		console.log("MUSICA")
+		console.log(objeto)
+		console.log("MUNDO")
+		console.log(mundo)
 		objeto.addEventListener('click', criarPropriedades);
-	}
+	}*/
 
+	/*var m=document.getElementById("mundo").children
+	for (var i = m.length - 1; i >= 0; i--) {
+		m[i].addEventListener('click', criarPropriedades);
+	}
+*/
+	console.log("MUNDO")
+	//console.log(mundo)
 	Dados.myPage = localStorage.getItem("myPage");
 	if (Dados.myPage == null || Dados.myPage == "undefined") { 
 		Dados.myPage = true; 		

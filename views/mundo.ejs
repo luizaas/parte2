@@ -22,7 +22,9 @@
 				<button id="excluir" type="button" class="botao-propriedades nao-exibir">Excluir</button>
 			</form>
 		</div>
-		<div id="mundo" class="resize-container"></div>
+		<%- data.htmlMundo %>
+		<!--div id="mundo" class="resize-container"></div-->
+
 		<div id="widgets">
 			<div class="widgets_container" id="widgets_container">
 				<button  id="texto" class="widget"><i class="material-icons">text_fields</i></button >
@@ -115,8 +117,9 @@
 	<img src="" id="visitorCharacter">	
 	<a href="/logout">SAIR</a>
 	<script src="https://cdn.jsdelivr.net/npm/interactjs@next/dist/interact.min.js"></script>
+	<script  type="module" src="../static/js/painelController.js"></script>
 	<script src="../static/js/redimensionar.js"></script>	
 	<script type="module" src="../static/js/sceneController.js"></script>	
-	<script type="module" src="../static/js/painelController.js"></script>	
+	
 </body>
 </html>
