@@ -220,6 +220,41 @@ app.post("/pegarcormundo/",(req,res)  =>{
 	   	})
 
 })
+app.post("/visita",(req,res)  =>{
+	let idMundo= req.body.id
+	let visitante=parseInt(req.body.visitante)
+	console.log(visitante)
+	let visitas=0;
+	console.log("Adiciona uma visita")
+	let query = { id: parseInt(idMundo) };
+	bd.collection('mundo').find(query)
+		.toArray((err, result) => {
+	       if (err) return console.log(err)
+	       if(result.length==0) {
+	       		res.send("NOPE")
+		        return;
+	   		}
+	   		visitas=parseInt(result[0].visitas)
+	   		console.log(visitas)
+	   		//if(visitas==NaN) visitas=0
+	   		if(visitante==1){
+		   		visitas+=1
+		   		console.log(visitas)
+		   		console.log("+1")
+		   		bd.collection('mundo').updateOne(query,{
+					$set:{
+						visitas:parseInt(visitas)
+					}
+				},(err,result)=>{
+					if(err) return res.send(err)
+					console.log("Visitas:"+visitas)
+					
+				})
+		   	}
+			res.send(visitas.toString())
+	})
+
+})
 app.get('/mundo/:idb',(req,res)=>{
 	let id= req.params.idb
 	
@@ -232,10 +267,11 @@ app.get('/mundo/:idb',(req,res)=>{
 	       		res.redirect('/erro/Mundo nao Existe')
 		        return;
 	   		}
-	   		console.log("COR DO ALIEN DO MUNDO")
-	   		console.log(result[0])
+
+	   		//console.log("COR DO ALIEN DO MUNDO")
+	   		//console.log(result[0])
 	   		alien=result[0].alien;
-	   		res.cookie("alienMundo",alien)
+	   		//res.cookie("alienMundo",alien)
 
 	   		bd.collection('mundo').find(query).toArray((err, result) => {
 	      	if (err) return console.log(err)
@@ -243,7 +279,7 @@ app.get('/mundo/:idb',(req,res)=>{
 		       	console.log("ERRO")
 		        return;
 	   		}
-	
+			res.render('mundo.ejs')
 
 	   		/*html="<div id=\"mundo\" class=\"resize-container\"> "
 	   		for (let i = 1; i <= parseInt(result["num_imagens"]); i++) {
@@ -285,7 +321,7 @@ app.get('/mundo/:idb',(req,res)=>{
 	   		//data={htmlMundo:htmlMundo,teste:"teste"}
 	   		
 	   		
-			res.render('mundo.ejs')
+			
 
 		})
 	   		
@@ -299,11 +335,28 @@ app.get('/cadastrar', (req, res) => { //pagina do cadastro
 app.post('/cadastrar', (req, res) => { //cadastrar
     bd.collection('usuario').find().toArray((err, results) => {
        if (err) return console.log(err)
-       maior=0
+       let maior=0
+   		let msgErro=""
+   		let cadastrar=true
        for (var i= results.length - 1; i >= 0; i--) {
+       		if(results[i].usuario==req.body.usuario){
+       			//msgErro="Usuario já existe"
+       			res.redirect("/erro/Usuario já existe")
+       			//res.render('cadastro.ejs',{erro:msgErro})
+       			cadastrar=false
+       			break
+       		}
+       		if(results[i].email==req.body.email){
+       			//msgErro="Esse email ja esta sendo usado"
+       			res.redirect("/erro/Esse email ja esta sendo usado")
+       			//res.render('cadastro.ejs',{erro:msgErro})
+       			cadastrar=false
+       			break
+       		}
       		if(results[i].id > maior)
       			maior=results[i].id  
        }
+       if(cadastrar){
 	    req.body.id = parseInt(maior) +1;
 	    mundo={
 	    	id:req.body.id,
@@ -312,6 +365,7 @@ app.post('/cadastrar', (req, res) => { //cadastrar
 	    	num_musicas:0,
 	    	num_textos:0,
 	    	num_videos:0,
+	    	visitas:0,
 	    	galerias:{},
 	    	icon:null
 	    }
@@ -337,6 +391,7 @@ app.post('/cadastrar', (req, res) => { //cadastrar
 
 			res.redirect('/login')
 		})
+	}
     })
 	
 })
@@ -356,6 +411,7 @@ app.route('/salvarmundo').post((req,res)=>{
 	dados.num_videos=req.body.num_videos
 	dados.galerias=req.body.galerias
 	dados.icon=req.body.icon
+	dados.visitas=parseInt(req.body.visitas)
 	//console.log(dados)
 	for (let i = 1; i <= Number(dados.num_imagens); i++) {
 		var nome="imagem_"+i+"_outerHTML"

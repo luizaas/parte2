@@ -54,8 +54,9 @@ export function recuperarDadosPainel(){
 	Dados.num_videos = bd["num_videos"];
 	Dados.num_musicas = bd["num_musicas"];
 	Dados.num_galerias = bd["num_galerias"];
-	Dados.galerias=null
-	//Dados.galerias = JSON.parse(bd["galerias"]);	
+	//Dados.galerias=null
+	console.log(bd["galerias"])
+	Dados.galerias = JSON.parse(JSON.stringify(bd["galerias"]));	
 	//Dados.icon = localStorage.getItem("icon");
 	//console.log(Dados)
 	if (Dados.num_imagens == null || Dados.num_imagens == "undefined") { 
@@ -358,22 +359,40 @@ export function recuperarDadosCena(){
 	}
 
 	Dados.userColor=CorAlienUsuario;
-
+	let visitanteCadatrado=false;
 	if(idUsuario==-1||idUsuario==undefined){
 		Dados.userColor=CorAlienMundo;
 		Dados.visitorColor = "green";
 		Dados.myPage=false;
+		data.visitante=1
 	}
 	else if(idUsuario==idMundo){
 		Dados.visitorColor = null;
 		Dados.myPage=true;
+		data.visitante=0
 	}else{
 		Dados.userColor=CorAlienMundo;
 		Dados.visitorColor=CorAlienUsuario;
 		Dados.myPage=false;
+		data.visitante=1
 	}
-	//Dados.userColor="blue"
-	//Dados.visitorColor="blue"
+	let visitas=0;
+		data.id=idMundo
+		//data.visitante=Dados.myPage
+		url='/visita'
+		$.ajax({
+	        type: 'POST',
+	        url:url, 
+	        data:data,
+	        async: false
+
+	    }).done(function(msg){
+	    	visitas=msg
+	    });
+	
+	let vis=document.getElementById("poster_2")
+	vis.title="VISITAS="+visitas
+	Dados.visitas=visitas
 	console.log(Dados)
 
 	return Dados;

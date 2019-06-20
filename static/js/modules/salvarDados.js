@@ -5,6 +5,7 @@ export function salvarDadosPortifolio(Dados){
 	data.id=url[url.length-1]
 	let widgets = document.querySelector("#widgets");
 	let objeto = document.querySelectorAll(".objeto");
+
 	for (let i = 0; i < widgets.length; i++) {
 			widgets[i].style.display = "none";
 	}
@@ -38,6 +39,7 @@ export function salvarDadosPortifolio(Dados){
     data.num_galerias=Dados.num_galerias
     localStorage.setItem("icon",Dados.icon);
     data.icon=Dados.icon
+    data.visitas=0
 	//console.log("Aqui Chegou")
 	//console.log(data)
 	//console.log( document.getElementById("formMundo"))
