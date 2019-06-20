@@ -3,9 +3,7 @@ export function salvarDadosPortifolio(Dados){
 	var data=new Object()
 	let url= window.location.href.split("/")
 	data.id=url[url.length-1]
-	data.html=document.getElementById("mundo")
-	console.log(data.html)
-	/*let widgets = document.querySelector("#widgets");
+	let widgets = document.querySelector("#widgets");
 	let objeto = document.querySelectorAll(".objeto");
 	for (let i = 0; i < widgets.length; i++) {
 			widgets[i].style.display = "none";
@@ -38,10 +36,10 @@ export function salvarDadosPortifolio(Dados){
     data.num_musicas=Dados.num_musicas
     localStorage.setItem("num_galerias",Dados.num_galerias);
     data.num_galerias=Dados.num_galerias
-    localStorage.setItem("icon",Dados.icon);*/
+    localStorage.setItem("icon",Dados.icon);
     data.icon=Dados.icon
-	console.log("Aqui Chegou")
-	console.log(data)
+	//console.log("Aqui Chegou")
+	//console.log(data)
 	//console.log( document.getElementById("formMundo"))
    // document.getElementById("formMundo").submit();
     $.ajax({
@@ -49,7 +47,8 @@ export function salvarDadosPortifolio(Dados){
         url: '/salvarmundo', // This one is missing here
         data: data
     }).done(function(msg){
-        console.log(msg); // log here 
+        //console.log(msg); // log here 
+        console.log("Mundo Salvo")
     });
 }
 
@@ -64,7 +63,7 @@ export function salvarDadosCena(Dados){
 	localStorage.setItem("floorTexture", Dados.floorTexture);
 	data.floorTexture=Dados.floorTexture
 	localStorage.setItem("userColor", Dados.userColor);
-	data.userColor=Dados.userColor
+	data.alien=Dados.userColor
 
 
 	$.ajax({
@@ -72,7 +71,7 @@ export function salvarDadosCena(Dados){
         url: '/salvarcena', // This one is missing here
         data: data
     }).done(function(msg){
-        console.log(msg); // log here 
+        console.log("Cena Salva"); // log here 
     });
 }
 

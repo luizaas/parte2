@@ -41,9 +41,10 @@ app.get('/login', (req, res) => { //pagina do login
 		console.log("Nao tem user ainda")
 		res.render('index.ejs')
 	}else{
-		var usuario = req.cookies.usuario.split("*")[1]
+		var usuario = req.cookies.usuario
 		console.log("Tem user: "+usuario)
-		let query = { id: parseInt(usuario) };
+		res.redirect("/mundo/"+usuario);
+		/*let query = { id: parseInt(usuario) };
 		bd.collection('usuario').find(query)
 		.toArray((err, result) => {
 	       if (err) return console.log(err)
@@ -51,10 +52,10 @@ app.get('/login', (req, res) => { //pagina do login
 	       		res.render('index.ejs')
 		        return;
 	   		}
-	   		var d= "*"+usuario+"*"+result[0].alien
-	   		res.cookie("usuario",d);
+	   		//var d= "*"+usuario+"*"+result[0].alien
+	   		//res.cookie("usuario",usuario);
 			res.redirect("/mundo/"+usuario);
-		})
+		})*/
 
 	}
     
@@ -65,6 +66,7 @@ app.get('/logout', (req, res) => { //logout
 })
 
 app.post('/login', (req, res) => { //fazer login
+	console.log("LOGIN")
 	var query = { usuario: req.body.usuario };
 	bd.collection('usuario').find(query)
 	.toArray((err, result) => {
@@ -76,8 +78,8 @@ app.post('/login', (req, res) => { //fazer login
    		}
 		if(result[0].senha==req.body.senha){
 			console.log("Senha correta")
-			var d= "*"+result[0].id+"*"+result[0].alien
-			res.cookie("usuario",d)
+			//var d= "*"+result[0].id+"*"+result[0].alien
+			res.cookie("usuario",result[0].id);
 			res.redirect("/mundo/"+result[0].id);
 		}
 		else{
@@ -151,10 +153,77 @@ function pegarMundoBD(id){
 		   		console.log(result)
 	   			console.log("**********")
 	   		})*/
+app.post("/pegarMundo/",(req,res)  =>{
+	let id= req.body.id
+	
+	console.log(req.body)
+	let query = { id: parseInt(id) };
+	bd.collection('mundo').find(query)
+		.toArray((err, result) => {
+	       if (err) return console.log(err)
+	       if(result.length==0) {
+	       		//res.redirect('/erro/Mundo nao Existe')
+	       		res.send("NOPE")
+		        return;
+	   		}
+	   		res.send(result[0])
+	   	})
+
+})
+app.post("/pegarCena/",(req,res)  =>{
+	let id= req.body.id
+	console.log(req.body)
+	let query = { id: parseInt(id) };
+	bd.collection('cena').find(query)
+		.toArray((err, result) => {
+	       if (err) return console.log(err)
+	       if(result.length==0) {
+	       		//res.redirect('/erro/Mundo nao Existe')
+	       		res.send("NOPE")
+		        return;
+	   		}
+	   		res.send(result[0])
+	   	})
+
+})
+app.post("/pegarcorusuario/",(req,res)  =>{
+	let id= req.body.id
+	console.log("PEGAR COR usuario")
+	console.log(req.body)
+	let query = { id: parseInt(id) };
+	bd.collection('cena').find(query)
+		.toArray((err, result) => {
+	       if (err) return console.log(err)
+	       if(result.length==0) {
+	       		//res.redirect('/erro/Mundo nao Existe')
+	       		res.send("NOPE")
+		        return;
+	   		}
+	   		res.send(result[0].alien)
+	   	})
+
+})
+app.post("/pegarcormundo/",(req,res)  =>{
+	let id= req.body.id
+	console.log("PEGAR COR MUNDO")
+	console.log(req.body)
+	let query = { id: parseInt(id) };
+	bd.collection('cena').find(query)
+		.toArray((err, result) => {
+	       if (err) return console.log(err)
+	       if(result.length==0) {
+	       		//res.redirect('/erro/Mundo nao Existe')
+	       		res.send("NOPE")
+		        return;
+	   		}
+	   		res.send(result[0].alien)
+	   	})
+
+})
 app.get('/mundo/:idb',(req,res)=>{
 	let id= req.params.idb
 	
-	//console.log(r)
+	console.log("MUNDO")
 	let query = { id: parseInt(id) };
 	bd.collection('usuario').find(query)
 		.toArray((err, result) => {
@@ -163,6 +232,8 @@ app.get('/mundo/:idb',(req,res)=>{
 	       		res.redirect('/erro/Mundo nao Existe')
 		        return;
 	   		}
+	   		console.log("COR DO ALIEN DO MUNDO")
+	   		console.log(result[0])
 	   		alien=result[0].alien;
 	   		res.cookie("alienMundo",alien)
 
@@ -172,10 +243,7 @@ app.get('/mundo/:idb',(req,res)=>{
 		       	console.log("ERRO")
 		        return;
 	   		}
-	   		console.log("PEGAR")
-	   		console.log(result[0])
-	   		console.log("**********")
-	   		html=result[0].html
+	
 
 	   		/*html="<div id=\"mundo\" class=\"resize-container\"> "
 	   		for (let i = 1; i <= parseInt(result["num_imagens"]); i++) {
@@ -213,18 +281,15 @@ app.get('/mundo/:idb',(req,res)=>{
 
 			html+=" </div>"
 	   		console.log(html)*/
-	   		let htmlMundo=html
-	   		data={htmlMundo:htmlMundo,teste:"teste"}
-	   		console.log(data)
+	 
+	   		//data={htmlMundo:htmlMundo,teste:"teste"}
 	   		
-			res.render('mundo.ejs',{data:data})
+	   		
+			res.render('mundo.ejs')
 
 		})
-
-
 	   		
 	})
-
 	
 })
 
@@ -242,14 +307,20 @@ app.post('/cadastrar', (req, res) => { //cadastrar
 	    req.body.id = parseInt(maior) +1;
 	    mundo={
 	    	id:req.body.id,
-	    	html:"<div id=\"mundo\" class=\"resize-container\"></div>",
+	    	num_galerias:0,
+	    	num_imagens:0,
+	    	num_musicas:0,
+	    	num_textos:0,
+	    	num_videos:0,
+	    	galerias:{},
 	    	icon:null
 	    }
 	    cena={
 	    	id:req.body.id,
 	    	backgroundTexture:"",
 			backgroundColor:"",
-			floorTexture:""
+			floorTexture:"text_1.jpeg",
+			alien:"blue"
 	    }
 	    req.body.alien="blue"
 	    bd.collection('usuario').save(req.body,(err,result)=>{
@@ -263,6 +334,7 @@ app.post('/cadastrar', (req, res) => { //cadastrar
 				console.log("Salvo no cena")
 			})
 			console.log("Salvo no BD")
+
 			res.redirect('/login')
 		})
     })
@@ -277,12 +349,11 @@ app.route('/salvarmundo').post((req,res)=>{
 	dados.id = parseInt(req.body.id)
 	dados.html=req.body.html
 	dados.icon=req.body.icon
-	/*dados.num_imagens=req.body.num_imagens
+	dados.num_imagens=req.body.num_imagens
 	dados.num_galerias=req.body.num_galerias
 	dados.num_musicas=req.body.num_musicas
 	dados.num_textos=req.body.num_textos
 	dados.num_videos=req.body.num_videos
-	
 	dados.galerias=req.body.galerias
 	dados.icon=req.body.icon
 	//console.log(dados)
@@ -315,7 +386,7 @@ app.route('/salvarmundo').post((req,res)=>{
 		dados[nome]=req.body[nome]
 		nome="galeria_"+i+"_innerHTML"
 		dados[nome]=req.body[nome]
-	}*/
+	}
 	console.log(dados)
 	var query = { id: parseInt(req.body.id) };
 	bd.collection('mundo').deleteOne(query)
@@ -338,9 +409,9 @@ app.route('/salvarcena').post((req,res)=>{
 	dados.backgroundTexture=req.body.backgroundTexture
 	dados.backgroundColor=req.body.backgroundColor
 	dados.floorTexture=req.body.floorTexture
-	var color=req.body.userColor
+	dados.alien=req.body.alien
+	var color=req.body.alien
 	var query = { id: parseInt(req.body.id) };
-	
 
 	bd.collection('cena').deleteOne(query)
 		.then((result)=>{
@@ -357,7 +428,8 @@ app.route('/salvarcena').post((req,res)=>{
 				},(err,result)=>{
 					if(err) return res.send(err)
 					console.log("Atualizou a cor do alien")
-					console.log(res.cookie)
+					var d = dados.id
+					res.cookie("usuario",d)
 					res.redirect('/login')
 				})
 				
@@ -367,6 +439,7 @@ app.route('/salvarcena').post((req,res)=>{
 		}).catch(err=> console.log( res.send(500,err)))
 
 })
+
 //atualizar no bd
 /*app.route('/edit/:idb')
 .get((req,res)=>{
