@@ -23,6 +23,7 @@ let physicsClock = setInterval(() => updatePositions(), DELTATIME);///////DON'T 
 export function updateCharacterColor(color){
     if(Dados.myPage){
         userCharacter.updateColor("../static/Sprites/alien_"+ color, color);
+        Dados.userCharacter=color;
     }
 }
 

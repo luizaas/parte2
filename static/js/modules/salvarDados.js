@@ -39,17 +39,13 @@ export function salvarDadosPortifolio(Dados){
     data.num_galerias=Dados.num_galerias
     localStorage.setItem("icon",Dados.icon);
     data.icon=Dados.icon
-    data.visitas=0
-	//console.log("Aqui Chegou")
-	//console.log(data)
-	//console.log( document.getElementById("formMundo"))
-   // document.getElementById("formMundo").submit();
+//    data.visitas=0
+
     $.ajax({
         type: 'POST',
-        url: '/salvarmundo', // This one is missing here
+        url: '/salvarmundo', 
         data: data
     }).done(function(msg){
-        //console.log(msg); // log here 
         console.log("Mundo Salvo")
     });
 }
@@ -58,16 +54,14 @@ export function salvarDadosCena(Dados){
 	var data=new Object()
 	let url= window.location.href.split("/")
 	data.id=url[url.length-1]
-	localStorage.setItem("backgroundTexture", Dados.backgroundTexture);
+	//localStorage.setItem("backgroundTexture", Dados.backgroundTexture);
 	data.backgroundTexture=Dados.backgroundTexture
-	localStorage.setItem("backgroundColor", Dados.backgroundColor);
+	//localStorage.setItem("backgroundColor", Dados.backgroundColor);
 	data.backgroundColor=Dados.backgroundColor
-	localStorage.setItem("floorTexture", Dados.floorTexture);
+	//localStorage.setItem("floorTexture", Dados.floorTexture);
 	data.floorTexture=Dados.floorTexture
-	localStorage.setItem("userColor", Dados.userColor);
+	///localStorage.setItem("userColor", Dados.userColor);
 	data.alien=Dados.userColor
-
-
 	$.ajax({
         type: 'POST',
         url: '/salvarcena', // This one is missing here

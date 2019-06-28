@@ -55,7 +55,6 @@ export function recuperarDadosPainel(){
 	Dados.num_musicas = bd["num_musicas"];
 	Dados.num_galerias = bd["num_galerias"];
 	//Dados.galerias=null
-	console.log(bd["galerias"])
 	Dados.galerias = JSON.parse(JSON.stringify(bd["galerias"]));	
 	//Dados.icon = localStorage.getItem("icon");
 	//console.log(Dados)
@@ -334,14 +333,15 @@ export function recuperarDadosCena(){
 	let CorAlienUsuario;
 	let user;
 	for (var i =cookie.length - 1; i >= 0; i--) {
-		console.log(cookie[i])
-		console.log(cookie[i].indexOf("usuario"))
+		//console.log(cookie[i])
+		//console.log(cookie[i].indexOf("usuario"))
 		if(cookie[i].indexOf("usuario")!=-1){
 			user=cookie[i].split("=")
 			idUsuario=user[1]
 			console.log("USER ATUAL: "+idUsuario)
 		}
 	}
+
 	if(idUsuario>-1){
 		url='/pegarcorusuario/'
 		data.id=idUsuario
@@ -356,6 +356,8 @@ export function recuperarDadosCena(){
         	CorAlienUsuario=msg;
         	console.log(CorAlienUsuario)
     	});
+    	//PEGAR ESTADO DA VAQUINHA, 
+    	
 	}
 
 	Dados.userColor=CorAlienUsuario;
@@ -377,23 +379,26 @@ export function recuperarDadosCena(){
 		data.visitante=1
 	}
 	let visitas=0;
-		data.id=idMundo
+	let estado="";
+	data.id=idMundo
 		//data.visitante=Dados.myPage
-		url='/visita'
-		$.ajax({
-	        type: 'POST',
-	        url:url, 
-	        data:data,
-	        async: false
+	url='/visita'
+	$.ajax({
+        type: 'POST',
+        url:url, 
+        data:data,
+        async: false
 
-	    }).done(function(msg){
-	    	visitas=msg
-	    });
+    }).done(function(msg){
+    	visitas=msg.visitas
+		estado=msg.estado
+    });
 	
 	let vis=document.getElementById("poster_2")
+	let est=document.getElementById("cow")
 	vis.title="VISITAS="+visitas
+	est.title="EU ESTOU "+estado
 	Dados.visitas=visitas
 	console.log(Dados)
-
 	return Dados;
 }

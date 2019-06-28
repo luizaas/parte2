@@ -36,7 +36,6 @@ app.get('/show', (req, res) => { //cata do bd
     })
 })
 app.get('/login', (req, res) => { //pagina do login
-
 	if(req.cookies.usuario==''||req.cookies.usuario==undefined){
 		console.log("Nao tem user ainda")
 		res.render('index.ejs')
@@ -44,21 +43,7 @@ app.get('/login', (req, res) => { //pagina do login
 		var usuario = req.cookies.usuario
 		console.log("Tem user: "+usuario)
 		res.redirect("/mundo/"+usuario);
-		/*let query = { id: parseInt(usuario) };
-		bd.collection('usuario').find(query)
-		.toArray((err, result) => {
-	       if (err) return console.log(err)
-	       if(result.length==0) {
-	       		res.render('index.ejs')
-		        return;
-	   		}
-	   		//var d= "*"+usuario+"*"+result[0].alien
-	   		//res.cookie("usuario",usuario);
-			res.redirect("/mundo/"+usuario);
-		})*/
-
 	}
-    
 })
 app.get('/logout', (req, res) => { //logout
 	res.cookie("usuario","")
@@ -71,24 +56,23 @@ app.post('/login', (req, res) => { //fazer login
 	bd.collection('usuario').find(query)
 	.toArray((err, result) => {
        if (err) return console.log(err)
-       console.log(result)
        if(result.length==0) {
        		res.redirect('/erro/Nao existe o usuario')
 	       	return;
    		}
 		if(result[0].senha==req.body.senha){
 			console.log("Senha correta")
-			//var d= "*"+result[0].id+"*"+result[0].alien
 			res.cookie("usuario",result[0].id);
 			res.redirect("/mundo/"+result[0].id);
 		}
 		else{
-			res.redirect('/erro/Senha Errada')
 			console.log("Senha errada")
+			res.redirect('/erro/Senha Errada')
 		}
 	})
 })
-function pegarMundoBD(id){
+/*function pegarMundoBD(id){
+	console.log("PEGAR MUNDO")
 	let query = { id: parseInt(id) };
 	bd.collection('mundo').find(query).toArray((err, result) => {
 	       if (err) return console.log(err)
@@ -96,9 +80,6 @@ function pegarMundoBD(id){
 		       	console.log("ERRO")
 		        return;
 	   		}
-	   		console.log("PEGAR")
-	   		console.log(result)
-	   		console.log("**********")
 	   		result=result[0]
 	   		html="<div id=\"mundo\" class=\"resize-container\"> "
 	   		for (let i = 1; i <= parseInt(result["num_imagens"]); i++) {
@@ -135,35 +116,19 @@ function pegarMundoBD(id){
 			}
 
 			html+="</div>"
-	   		console.log(html)
 	   		let htmlMundo=html
-
 	})
-}
-	   		/*html=""
-	   		console.log("**********")
-	   		console.log("**********")
-	   		bd.collection('cena').find(query).toArray((err, result) => {
-	   			if (err) return console.log(err)
-		        if(result.length==0) {
-			       	console.log("ERRO")
-			        return;
-		   		}
-		   		console.log(html)
-		   		console.log(result)
-	   			console.log("**********")
-	   		})*/
+}*/
+
 app.post("/pegarMundo/",(req,res)  =>{
 	let id= req.body.id
-	
-	console.log(req.body)
+	console.log("PEGAR MUNDO")
 	let query = { id: parseInt(id) };
 	bd.collection('mundo').find(query)
 		.toArray((err, result) => {
 	       if (err) return console.log(err)
 	       if(result.length==0) {
-	       		//res.redirect('/erro/Mundo nao Existe')
-	       		res.send("NOPE")
+	       		res.send("Erro")
 		        return;
 	   		}
 	   		res.send(result[0])
@@ -172,31 +137,27 @@ app.post("/pegarMundo/",(req,res)  =>{
 })
 app.post("/pegarCena/",(req,res)  =>{
 	let id= req.body.id
-	console.log(req.body)
+	console.log("PEGAR CENA")
 	let query = { id: parseInt(id) };
 	bd.collection('cena').find(query)
 		.toArray((err, result) => {
 	       if (err) return console.log(err)
 	       if(result.length==0) {
-	       		//res.redirect('/erro/Mundo nao Existe')
-	       		res.send("NOPE")
+	       		res.send("ERRO")
 		        return;
 	   		}
 	   		res.send(result[0])
 	   	})
-
 })
 app.post("/pegarcorusuario/",(req,res)  =>{
 	let id= req.body.id
-	console.log("PEGAR COR usuario")
-	console.log(req.body)
+	console.log("PEGAR COR USUARIO")
 	let query = { id: parseInt(id) };
-	bd.collection('cena').find(query)
+	bd.collection('usuario').find(query)
 		.toArray((err, result) => {
 	       if (err) return console.log(err)
 	       if(result.length==0) {
-	       		//res.redirect('/erro/Mundo nao Existe')
-	       		res.send("NOPE")
+	       		res.send("blue")
 		        return;
 	   		}
 	   		res.send(result[0].alien)
@@ -206,59 +167,93 @@ app.post("/pegarcorusuario/",(req,res)  =>{
 app.post("/pegarcormundo/",(req,res)  =>{
 	let id= req.body.id
 	console.log("PEGAR COR MUNDO")
-	console.log(req.body)
 	let query = { id: parseInt(id) };
 	bd.collection('cena').find(query)
 		.toArray((err, result) => {
 	       if (err) return console.log(err)
 	       if(result.length==0) {
-	       		//res.redirect('/erro/Mundo nao Existe')
-	       		res.send("NOPE")
+	       		res.send("blue")
 		        return;
 	   		}
 	   		res.send(result[0].alien)
 	   	})
-
 })
 app.post("/visita",(req,res)  =>{
+	console.log("VISITA")
 	let idMundo= req.body.id
 	let visitante=parseInt(req.body.visitante)
+	let data=new Object()
 	console.log(visitante)
 	let visitas=0;
+	let ultimasVisitas=0;
 	console.log("Adiciona uma visita")
 	let query = { id: parseInt(idMundo) };
-	bd.collection('mundo').find(query)
+	bd.collection('usuario').find(query)
 		.toArray((err, result) => {
 	       if (err) return console.log(err)
 	       if(result.length==0) {
 	       		res.send("NOPE")
 		        return;
 	   		}
-	   		visitas=parseInt(result[0].visitas)
+	   		visitas=parseInt(result[0].visitasTotais)
+	   		ultimasVisitas=parseInt(result[0].visitasDesdeUltimoAcesso)
 	   		console.log(visitas)
-	   		//if(visitas==NaN) visitas=0
+	   		console.log(ultimasVisitas)
+
+	   		//ESTADO VAQUINHA
+	   		if(ultimasVisitas==0)
+	   			data.estado="MOOORRENDO DE FOME!!"
+	   		else if(ultimasVisitas<10)
+	   			data.estado="COM MOOOITA FOME!!"
+	   		else if(ultimasVisitas<25)
+	   			data.estado="COM FOME!!"
+	   		else if(ultimasVisitas<50)
+				data.estado="SACIADA."
+			else if(ultimasVisitas<100)
+				data.estado="CHEIAAA E FELIZ."
+			else
+				data.estado="MAIS FELIZ IMOOOSIVEL!!!!"
+
 	   		if(visitante==1){
 		   		visitas+=1
+		   		ultimasVisitas+=1
 		   		console.log(visitas)
+		   		console.log(ultimasVisitas)
 		   		console.log("+1")
-		   		bd.collection('mundo').updateOne(query,{
+		   		bd.collection('usuario').updateOne(query,{
 					$set:{
-						visitas:parseInt(visitas)
+						visitasTotais:parseInt(visitas),
+						visitasDesdeUltimoAcesso:parseInt(ultimasVisitas)
 					}
 				},(err,result)=>{
 					if(err) return res.send(err)
 					console.log("Visitas:"+visitas)
+					console.log("visitasDesdeUltimoAcesso:"+ultimasVisitas)
+					
+				})
+		   	}else{
+		   		ultimasVisitas = 0;
+		   		bd.collection('usuario').updateOne(query,{
+					$set:{
+						visitasDesdeUltimoAcesso:parseInt(ultimasVisitas)
+					}
+				},(err,result)=>{
+					if(err) return res.send(err)
+					console.log("Visitas:"+visitas)
+					console.log("visitasDesdeUltimoAcesso:"+ultimasVisitas)
 					
 				})
 		   	}
-			res.send(visitas.toString())
+		   	data.visitas=visitas.toString()
+		   	console.log(data)
+		   	res.send(data)
+
 	})
 
 })
 app.get('/mundo/:idb',(req,res)=>{
 	let id= req.params.idb
-	
-	console.log("MUNDO")
+	console.log("ENTRANDO NO MUNDO")
 	let query = { id: parseInt(id) };
 	bd.collection('usuario').find(query)
 		.toArray((err, result) => {
@@ -267,63 +262,15 @@ app.get('/mundo/:idb',(req,res)=>{
 	       		res.redirect('/erro/Mundo nao Existe')
 		        return;
 	   		}
-
-	   		//console.log("COR DO ALIEN DO MUNDO")
-	   		//console.log(result[0])
-	   		alien=result[0].alien;
-	   		//res.cookie("alienMundo",alien)
-
-	   		bd.collection('mundo').find(query).toArray((err, result) => {
+	   		//alien=result[0].alien;
+	   		/*bd.collection('mundo').find(query).toArray((err, result) => {
 	      	if (err) return console.log(err)
 	        if(result.length==0) {
 		       	console.log("ERRO")
 		        return;
-	   		}
-			res.render('mundo.ejs')
-
-	   		/*html="<div id=\"mundo\" class=\"resize-container\"> "
-	   		for (let i = 1; i <= parseInt(result["num_imagens"]); i++) {
-				outerHTML=result["imagem_"+i+"_outerHTML"]
-				//outerHTML=outerHTML.replace("<img ","<img onclick=\"criarPropriedades() \"")
-				html+=outerHTML
-			}
-			for (let i = 1; i <= parseInt(result["num_textos"]); i++) {
-				outerHTML=result["texto_"+i+"_outerHTML"]
-				innerHTML=result["texto_"+i+"_innerHTML"]
-				//outerHTML=outerHTML.replace("<textarea ","<textarea onclick=\"criarPropriedades() \"")
-				html+=outerHTML
-			}
-
-			for (let i = 1; i <= parseInt(result["num_videos"]); i++) {
-				outerHTML=result["video_"+i+"_outerHTML"]
-				innerHTML=result["video_"+i+"_innerHTML"]
-				//outerHTML=outerHTML.replace("<div ","<div onclick=\"criarPropriedades() \"")
-				html+=outerHTML
-			}
-			
-			for (let i = 1; i <= parseInt(result["num_musicas"]); i++) {
-				outerHTML=result["musica_"+i+"_outerHTML"]
-				innerHTML=result["musica_"+i+"_innerHTML"]
-				//outerHTML=outerHTML.replace("<div ","<div onclick=\"criarPropriedades() \"")
-				html+=outerHTML
-			}
-			
-			for (let i = 1; i <= parseInt(result["num_galerias"]); i++) {
-				outerHTML=result["galeria_"+i+"_outerHTML"]
-				innerHTML=result["galeria_"+i+"_innerHTML"]
-				//outerHTML=outerHTML.replace("<div ","<div onclick=\"criarPropriedades() \"")
-				html+=outerHTML
-			}
-
-			html+=" </div>"
-	   		console.log(html)*/
-	 
-	   		//data={htmlMundo:htmlMundo,teste:"teste"}
-	   		
-	   		
-			
-
-		})
+	   		}*/
+			res.render('mundo.ejs')   		
+		//})
 	   		
 	})
 	
@@ -336,20 +283,15 @@ app.post('/cadastrar', (req, res) => { //cadastrar
     bd.collection('usuario').find().toArray((err, results) => {
        if (err) return console.log(err)
        let maior=0
-   		let msgErro=""
    		let cadastrar=true
        for (var i= results.length - 1; i >= 0; i--) {
        		if(results[i].usuario==req.body.usuario){
-       			//msgErro="Usuario já existe"
        			res.redirect("/erro/Usuario já existe")
-       			//res.render('cadastro.ejs',{erro:msgErro})
        			cadastrar=false
        			break
        		}
        		if(results[i].email==req.body.email){
-       			//msgErro="Esse email ja esta sendo usado"
        			res.redirect("/erro/Esse email ja esta sendo usado")
-       			//res.render('cadastro.ejs',{erro:msgErro})
        			cadastrar=false
        			break
        		}
@@ -357,49 +299,46 @@ app.post('/cadastrar', (req, res) => { //cadastrar
       			maior=results[i].id  
        }
        if(cadastrar){
-	    req.body.id = parseInt(maior) +1;
-	    mundo={
-	    	id:req.body.id,
-	    	num_galerias:0,
-	    	num_imagens:0,
-	    	num_musicas:0,
-	    	num_textos:0,
-	    	num_videos:0,
-	    	visitas:0,
-	    	galerias:{},
-	    	icon:null
-	    }
-	    cena={
-	    	id:req.body.id,
-	    	backgroundTexture:"",
-			backgroundColor:"",
-			floorTexture:"text_1.jpeg",
-			alien:"blue"
-	    }
-	    req.body.alien="blue"
-	    bd.collection('usuario').save(req.body,(err,result)=>{
-			if(err) return console.log(err)
-			bd.collection('mundo').save(mundo,(err,result)=>{
+		    req.body.id = parseInt(maior) +1;
+		    mundo={
+		    	id:req.body.id,
+		    	num_galerias:0,
+		    	num_imagens:0,
+		    	num_musicas:0,
+		    	num_textos:0,
+		    	num_videos:0,
+		    	galerias:{},
+		    	icon:null
+		    }
+		    cena={
+		    	id:req.body.id,
+		    	backgroundTexture:"",
+				backgroundColor:"",
+				floorTexture:"text_1.jpeg"
+		    }
+		    req.body.alien="blue"
+		    req.body.visitasTotais=0
+		    req.body.visitasDesdeUltimoAcesso=0
+		    bd.collection('usuario').save(req.body,(err,result)=>{
 				if(err) return console.log(err)
-				console.log("Salvo no mundo")
+				bd.collection('mundo').save(mundo,(err,result)=>{
+					if(err) return console.log(err)
+					console.log("Salvo no mundo")
+				})
+				bd.collection('cena').save(cena,(err,result)=>{
+					if(err) return console.log(err)
+					console.log("Salvo no cena")
+				})
+				console.log("Salvo no BD")
+				res.redirect('/login')
 			})
-			bd.collection('cena').save(cena,(err,result)=>{
-				if(err) return console.log(err)
-				console.log("Salvo no cena")
-			})
-			console.log("Salvo no BD")
-
-			res.redirect('/login')
-		})
-	}
+		}
     })
 	
 })
 
 app.route('/salvarmundo').post((req,res)=>{
-	console.log("SALVAR")
-	console.log(req.body)
-	console.log("SALVAR")
+	console.log("SALVAR O MUNDO")
 	var dados=new Object()
 	dados.id = parseInt(req.body.id)
 	dados.html=req.body.html
@@ -411,8 +350,6 @@ app.route('/salvarmundo').post((req,res)=>{
 	dados.num_videos=req.body.num_videos
 	dados.galerias=req.body.galerias
 	dados.icon=req.body.icon
-	dados.visitas=parseInt(req.body.visitas)
-	//console.log(dados)
 	for (let i = 1; i <= Number(dados.num_imagens); i++) {
 		var nome="imagem_"+i+"_outerHTML"
 		dados[nome]=req.body[nome]
@@ -443,23 +380,23 @@ app.route('/salvarmundo').post((req,res)=>{
 		nome="galeria_"+i+"_innerHTML"
 		dados[nome]=req.body[nome]
 	}
-	console.log(dados)
 	var query = { id: parseInt(req.body.id) };
 	bd.collection('mundo').deleteOne(query)
 		.then((result)=>{
-			console.log("Deletou: "+result.deletedCount)
 			if(result.deletedCount>0){
 				bd.collection('mundo').save(dados,(err,result)=>{
 					if(err) return console.log(err)
 					console.log("Alteraçoes salvas!")
 				})
 			}else{
-				console.log("Pq diacho nao ta apagando?")
+				console.log("Deu erro e não devia dar")
 			}
 		}).catch(err=> console.log( res.send(500,err)))
 
 })
+
 app.route('/salvarcena').post((req,res)=>{
+	console.log("SALVAR A CENA")
 	var dados=new Object()
 	dados.id = parseInt(req.body.id)
 	dados.backgroundTexture=req.body.backgroundTexture
@@ -467,82 +404,40 @@ app.route('/salvarcena').post((req,res)=>{
 	dados.floorTexture=req.body.floorTexture
 	dados.alien=req.body.alien
 	var color=req.body.alien
-	var query = { id: parseInt(req.body.id) };
 
+	var query = { id: parseInt(req.body.id) };
 	bd.collection('cena').deleteOne(query)
 		.then((result)=>{
-			console.log("Deletou: "+result.deletedCount)
+			//console.log("Deletou: "+result.deletedCount)
 			if(result.deletedCount>0){
 				bd.collection('cena').save(dados,(err,result)=>{
 					if(err) return console.log(err)
 					console.log("Alteraçoes salvas!")
 				})
-				bd.collection('usuario').updateOne(query,{
-					$set:{
-						alien:color
-					}
-				},(err,result)=>{
-					if(err) return res.send(err)
-					console.log("Atualizou a cor do alien")
+				if(color!="undefined" && color!=undefined){
+					bd.collection('usuario').updateOne(query,{
+						$set:{
+							alien:color
+						}
+					},(err,result)=>{
+						if(err) return res.send(err)
+						console.log("Atualizou a cor do alien para "+color)
+						var d = dados.id
+						res.cookie("usuario",d)
+						res.redirect('/login')
+					})
+				}else{
 					var d = dados.id
 					res.cookie("usuario",d)
 					res.redirect('/login')
-				})
-				
+				}
 			}else{
-				console.log("Pq diacho nao ta apagando?")
+				console.log("DEU ERRO E NAO DEVIA")
 			}
 		}).catch(err=> console.log( res.send(500,err)))
 
 })
 
-//atualizar no bd
-/*app.route('/edit/:idb')
-.get((req,res)=>{
-	var idd= req.params.idb
-	console.log(idd)
-	bd.collection('usuario').find({"_id":ObjectID(idd)}).toArray((err,result)=>{
-		if(err) return res.send(err)
-		res.render('edit.ejs',{data: result})
-	})
-})
-.post((req,res)=>{
-	var idb=req.params.idb
-	var usuario = req.body.usuario
-	var email=req.body.email
-	var id=req.body.id
-	var senha=req.body.senha
-	bd.collection('usuario').updateOne({"_id":ObjectID(idb)},{
-		$set:{
-			usuario:usuario,
-			id:id,
-			email:email,
-			senha:senha
-		}
-	},(err,result)=>{
-		if(err) return res.send(err)
-		res.redirect('/show')
-		console.log("Atualizouu")
-	})
-})
-*/
-app.route('/delete/:idb')
-.get((req,res)=>{
-	var id=req.params.idb
-	console.log(id)
-	var query = { id: parseInt(id) };
-
-	bd.collection('usuario').deleteOne(query)
-		.then((result)=>{
-			bd.collection('mundo').deleteOne(query)
-			.then((result)=>{
-				console.log("Deletanduu do mundo")
-				console.log(result.deletedCount)
-				res.redirect("/show");
-			}).catch(err=> console.log( res.send(500,err)))
-		})
-		.catch(err=> console.log( res.send(500,err)))
-	})
 //Erro
 app.get('/erro/:msg', (req, res) => {
     res.render('erro.ejs',{data:req.params.msg})
