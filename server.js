@@ -6,6 +6,7 @@ const uri = "mongodb+srv://user1:senha@cluster0-jfusq.gcp.mongodb.net/test?retry
 const mongoose = require('mongoose');
 const session = require('express-session');
 const cookie = require('cookie-parser');
+const PORT = process.env.PORT || 8000
 
 app.set('view engine','ejs')
 app.use(cookie());
@@ -17,8 +18,8 @@ var ObjectID = require('mongodb').ObjectID;
 MongoClient.connect(uri,(err,client)=>{
 	if(err) return console.log(err)
 	bd=client.db("craft")
-	app.listen(443,function(){
-		console.log("running in 443")
+	app.listen(PORT,() =>{
+		console.log("running in $PORT")
 	})
 })
 
