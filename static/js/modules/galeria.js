@@ -1,15 +1,15 @@
 let direita, esquerda;
 
-export function initGaleria(){
+export function initGaleria(galerias){
 	direita = document.querySelectorAll(".seta-direita-galeria");
 	esquerda = document.querySelectorAll(".seta-esquerda-galeria");
 	for (let i = 0; i < direita.length; i++) {
-	  direita[i].addEventListener('click',proximaImgemDireita);
-	  esquerda[i].addEventListener('click',proximaImgemEsquerda);
+	  direita[i].addEventListener('click',proximaImgemDireita(galerias));
+	  esquerda[i].addEventListener('click',proximaImgemEsquerda(galerias));
 	}
 }
 
-export function proximaImgemDireita(e){
+export function proximaImgemDireita(e, galerias){
 	let id_galeria = this.parentNode.id;
 	let value_galeria = this.parentNode.getAttribute("data-value"); //imagem atual
 	let img = this.parentNode.firstElementChild;
@@ -23,7 +23,7 @@ export function proximaImgemDireita(e){
 	this.parentNode.setAttribute("data-value",value_galeria);
 }
 
-export function proximaImgemEsquerda(e){
+export function proximaImgemEsquerda(e, galerias){
 	let id_galeria = this.parentNode.id;
 	let value_galeria = this.parentNode.getAttribute("data-value"); //imagem atual
 	let img = this.parentNode.firstElementChild;

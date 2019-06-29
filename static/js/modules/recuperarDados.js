@@ -156,15 +156,29 @@ export function recuperarDadosPainel(){
 		objeto.addEventListener('click', criarPropriedades);
 	}
 
-	Dados.myPage = localStorage.getItem("myPage");
-	if (Dados.myPage == null || Dados.myPage == "undefined") { 
-		Dados.myPage = true; 		
+	let cookie=document.cookie.split(";")
+	let idUsuario=-1;
+	let user;
+
+	for (var i =cookie.length - 1; i >= 0; i--) {
+		//console.log(cookie[i])
+		//console.log(cookie[i].indexOf("usuario"))
+		if(cookie[i].indexOf("usuario")!=-1){
+			user=cookie[i].split("=")
+			idUsuario=user[1]
+			console.log("USER ATUAL: "+idUsuario)
+		}
+	}	
+
+	let idMundo=url[url.length-1]
+	if(idUsuario==-1||idUsuario==undefined){
+		Dados.myPage=false;
 	}
-	else if (Dados.myPage == "true"){
-		Dados.myPage = true; 
+	else if(idUsuario==idMundo){
+		Dados.myPage=true;
 	}
-	else if (Dados.myPage == "false"){
-		Dados.myPage = false; 
+	else{		
+		Dados.myPage=false;
 	}
 
 	if(Dados.myPage){
@@ -323,8 +337,7 @@ export function recuperarDadosCena(){
         CorAlienMundo=msg;
         console.log(CorAlienMundo)
     });
-    
-    
+      
 
 
 	let cookie=document.cookie.split(";")

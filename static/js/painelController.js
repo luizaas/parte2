@@ -10,7 +10,6 @@ let Dados = recuperarDadosPainel();
 function setLayerSeletoresVisible(){
 	let seletores = document.querySelector("#seletores");
 	seletores.style.display = "block";
-
 }
 
 function setLayerSeletoresHidden(){
@@ -143,8 +142,10 @@ function setIconeOptions(){
 	});
 }
 
+
+
 if(Dados.myPage){
-	initGaleria();
+	initGaleria(Dados.galerias);
 	let propriedades = document.querySelector("#propriedades");
 	let excluir = document.querySelector("#excluir");
 	let alterar = document.querySelector("#alterar");
