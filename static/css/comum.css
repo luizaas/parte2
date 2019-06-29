@@ -58,3 +58,8 @@ button {
   border: 2% solid #888;
   width: 30%;
 }
+.central {
+  position: fixed; 
+  top: 50%;
+  left: 50%;
+}

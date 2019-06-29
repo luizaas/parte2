@@ -71,56 +71,8 @@ app.post('/login', (req, res) => { //fazer login
 		}
 	})
 })
-/*function pegarMundoBD(id){
-	console.log("PEGAR MUNDO")
-	let query = { id: parseInt(id) };
-	bd.collection('mundo').find(query).toArray((err, result) => {
-	       if (err) return console.log(err)
-	       if(result.length==0) {
-		       	console.log("ERRO")
-		        return;
-	   		}
-	   		result=result[0]
-	   		html="<div id=\"mundo\" class=\"resize-container\"> "
-	   		for (let i = 1; i <= parseInt(result["num_imagens"]); i++) {
-				outerHTML=result["imagem_"+i+"_outerHTML"]
-				outerHTML=outerHTML.replace("<img ","<img onclick=\"criarPropriedades() \"")
-				html+=outerHTML
-			}
-			for (let i = 1; i <= parseInt(result["num_textos"]); i++) {
-				outerHTML=result["texto_"+i+"_outerHTML"]
-				innerHTML=result["texto_"+i+"_innerHTML"]
-				outerHTML=outerHTML.replace("<textarea ","<textarea onclick=\"criarPropriedades() \"")
-				html+=outerHTML
-			}
 
-			for (let i = 1; i <= parseInt(result["num_videos"]); i++) {
-				outerHTML=result["video_"+i+"_outerHTML"]
-				innerHTML=result["video_"+i+"_innerHTML"]
-				outerHTML=outerHTML.replace("<div ","<div onclick=\"criarPropriedades() \"")
-				html+=outerHTML
-			}
-			
-			for (let i = 1; i <= parseInt(result["num_musicas"]); i++) {
-				outerHTML=result["musica_"+i+"_outerHTML"]
-				innerHTML=result["musica_"+i+"_innerHTML"]
-				outerHTML=outerHTML.replace("<div ","<div onclick=\"criarPropriedades() \"")
-				html+=outerHTML
-			}
-			
-			for (let i = 1; i <= parseInt(result["num_galerias"]); i++) {
-				outerHTML=result["galeria_"+i+"_outerHTML"]
-				innerHTML=result["galeria_"+i+"_innerHTML"]
-				outerHTML=outerHTML.replace("<div ","<div onclick=\"criarPropriedades() \"")
-				html+=outerHTML
-			}
-
-			html+="</div>"
-	   		let htmlMundo=html
-	})
-}*/
-
-app.post("/pegarMundo/",(req,res)  =>{
+app.post("/pegarMundo/",(req,res)  =>{ //Pega os dados do mundo
 	let id= req.body.id
 	console.log("PEGAR MUNDO")
 	let query = { id: parseInt(id) };
@@ -135,7 +87,7 @@ app.post("/pegarMundo/",(req,res)  =>{
 	   	})
 
 })
-app.post("/pegarCena/",(req,res)  =>{
+app.post("/pegarCena/",(req,res)  =>{ //Pega os dados da Cena
 	let id= req.body.id
 	console.log("PEGAR CENA")
 	let query = { id: parseInt(id) };
@@ -146,10 +98,11 @@ app.post("/pegarCena/",(req,res)  =>{
 	       		res.send("ERRO")
 		        return;
 	   		}
+	   		console.log(result)
 	   		res.send(result[0])
 	   	})
 })
-app.post("/pegarcorusuario/",(req,res)  =>{
+app.post("/pegarcorusuario/",(req,res)  =>{ //Pega a cor do alien do usuario
 	let id= req.body.id
 	console.log("PEGAR COR USUARIO")
 	let query = { id: parseInt(id) };
@@ -160,25 +113,26 @@ app.post("/pegarcorusuario/",(req,res)  =>{
 	       		res.send("blue")
 		        return;
 	   		}
-	   		res.send(result[0].alien)
+	   		console.log(result[0])
+	   		res.send(result[0])
 	   	})
 
 })
-app.post("/pegarcormundo/",(req,res)  =>{
+app.post("/pegarcormundo/",(req,res)  =>{ //Pega a cor do alien do mundo
 	let id= req.body.id
 	console.log("PEGAR COR MUNDO")
 	let query = { id: parseInt(id) };
-	bd.collection('cena').find(query)
+	bd.collection('usuario').find(query)
 		.toArray((err, result) => {
 	       if (err) return console.log(err)
 	       if(result.length==0) {
 	       		res.send("blue")
 		        return;
 	   		}
-	   		res.send(result[0].alien)
+	   		res.send(result[0])
 	   	})
 })
-app.post("/visita",(req,res)  =>{
+app.post("/visita",(req,res)  =>{ //Pega quantidade de visitas e estado da vaquinha
 	console.log("VISITA")
 	let idMundo= req.body.id
 	let visitante=parseInt(req.body.visitante)
@@ -217,9 +171,6 @@ app.post("/visita",(req,res)  =>{
 	   		if(visitante==1){
 		   		visitas+=1
 		   		ultimasVisitas+=1
-		   		console.log(visitas)
-		   		console.log(ultimasVisitas)
-		   		console.log("+1")
 		   		bd.collection('usuario').updateOne(query,{
 					$set:{
 						visitasTotais:parseInt(visitas),
@@ -229,7 +180,6 @@ app.post("/visita",(req,res)  =>{
 					if(err) return res.send(err)
 					console.log("Visitas:"+visitas)
 					console.log("visitasDesdeUltimoAcesso:"+ultimasVisitas)
-					
 				})
 		   	}else{
 		   		ultimasVisitas = 0;
@@ -245,9 +195,7 @@ app.post("/visita",(req,res)  =>{
 				})
 		   	}
 		   	data.visitas=visitas.toString()
-		   	console.log(data)
 		   	res.send(data)
-
 	})
 
 })
@@ -257,21 +205,12 @@ app.get('/mundo/:idb',(req,res)=>{
 	let query = { id: parseInt(id) };
 	bd.collection('usuario').find(query)
 		.toArray((err, result) => {
-	       if (err) return console.log(err)
-	       if(result.length==0) {
+	        if (err) return console.log(err)
+	        if(result.length==0) {
 	       		res.redirect('/erro/Mundo nao Existe')
 		        return;
 	   		}
-	   		//alien=result[0].alien;
-	   		/*bd.collection('mundo').find(query).toArray((err, result) => {
-	      	if (err) return console.log(err)
-	        if(result.length==0) {
-		       	console.log("ERRO")
-		        return;
-	   		}*/
 			res.render('mundo.ejs')   		
-		//})
-	   		
 	})
 	
 })
@@ -281,10 +220,10 @@ app.get('/cadastrar', (req, res) => { //pagina do cadastro
 })
 app.post('/cadastrar', (req, res) => { //cadastrar
     bd.collection('usuario').find().toArray((err, results) => {
-       if (err) return console.log(err)
-       let maior=0
+        if (err) return console.log(err)
+        let maior=0
    		let cadastrar=true
-       for (var i= results.length - 1; i >= 0; i--) {
+        for (var i= results.length - 1; i >= 0; i--) {
        		if(results[i].usuario==req.body.usuario){
        			res.redirect("/erro/Usuario já existe")
        			cadastrar=false
@@ -297,8 +236,8 @@ app.post('/cadastrar', (req, res) => { //cadastrar
        		}
       		if(results[i].id > maior)
       			maior=results[i].id  
-       }
-       if(cadastrar){
+        }
+        if(cadastrar){
 		    req.body.id = parseInt(maior) +1;
 		    mundo={
 		    	id:req.body.id,
@@ -322,19 +261,16 @@ app.post('/cadastrar', (req, res) => { //cadastrar
 		    bd.collection('usuario').save(req.body,(err,result)=>{
 				if(err) return console.log(err)
 				bd.collection('mundo').save(mundo,(err,result)=>{
-					if(err) return console.log(err)
-					console.log("Salvo no mundo")
+					if(err) return console.log(err)	
 				})
 				bd.collection('cena').save(cena,(err,result)=>{
 					if(err) return console.log(err)
-					console.log("Salvo no cena")
 				})
-				console.log("Salvo no BD")
+				console.log("Cadastrado")
 				res.redirect('/login')
 			})
 		}
     })
-	
 })
 
 app.route('/salvarmundo').post((req,res)=>{
@@ -349,7 +285,6 @@ app.route('/salvarmundo').post((req,res)=>{
 	dados.num_textos=req.body.num_textos
 	dados.num_videos=req.body.num_videos
 	dados.galerias=req.body.galerias
-	dados.icon=req.body.icon
 	for (let i = 1; i <= Number(dados.num_imagens); i++) {
 		var nome="imagem_"+i+"_outerHTML"
 		dados[nome]=req.body[nome]
@@ -404,11 +339,9 @@ app.route('/salvarcena').post((req,res)=>{
 	dados.floorTexture=req.body.floorTexture
 	dados.alien=req.body.alien
 	var color=req.body.alien
-
 	var query = { id: parseInt(req.body.id) };
 	bd.collection('cena').deleteOne(query)
 		.then((result)=>{
-			//console.log("Deletou: "+result.deletedCount)
 			if(result.deletedCount>0){
 				bd.collection('cena').save(dados,(err,result)=>{
 					if(err) return console.log(err)
@@ -424,12 +357,10 @@ app.route('/salvarcena').post((req,res)=>{
 						console.log("Atualizou a cor do alien para "+color)
 						var d = dados.id
 						res.cookie("usuario",d)
-						res.redirect('/login')
 					})
 				}else{
 					var d = dados.id
 					res.cookie("usuario",d)
-					res.redirect('/login')
 				}
 			}else{
 				console.log("DEU ERRO E NAO DEVIA")
@@ -438,7 +369,7 @@ app.route('/salvarcena').post((req,res)=>{
 
 })
 
-//Erro
+//Pagina de Erro
 app.get('/erro/:msg', (req, res) => {
     res.render('erro.ejs',{data:req.params.msg})
 })
