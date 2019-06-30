@@ -99,7 +99,6 @@ app.post("/pegarCena/",(req,res)  =>{ //Pega os dados da Cena
 	       		res.send("ERRO")
 		        return;
 	   		}
-	   		console.log(result)
 	   		res.send(result[0])
 	   	})
 })
@@ -114,7 +113,6 @@ app.post("/pegarcorusuario/",(req,res)  =>{ //Pega a cor do alien do usuario
 	       		res.send("blue")
 		        return;
 	   		}
-	   		console.log(result[0])
 	   		res.send(result[0])
 	   	})
 
@@ -138,10 +136,8 @@ app.post("/visita",(req,res)  =>{ //Pega quantidade de visitas e estado da vaqui
 	let idMundo= req.body.id
 	let visitante=parseInt(req.body.visitante)
 	let data=new Object()
-	console.log(visitante)
 	let visitas=0;
 	let ultimasVisitas=0;
-	console.log("Adiciona uma visita")
 	let query = { id: parseInt(idMundo) };
 	bd.collection('usuario').find(query)
 		.toArray((err, result) => {
@@ -152,9 +148,6 @@ app.post("/visita",(req,res)  =>{ //Pega quantidade de visitas e estado da vaqui
 	   		}
 	   		visitas=parseInt(result[0].visitasTotais)
 	   		ultimasVisitas=parseInt(result[0].visitasDesdeUltimoAcesso)
-	   		console.log(visitas)
-	   		console.log(ultimasVisitas)
-
 	   		//ESTADO VAQUINHA
 	   		if(ultimasVisitas==0)
 	   			data.estado="MOOORRENDO DE FOME!!"
@@ -179,8 +172,6 @@ app.post("/visita",(req,res)  =>{ //Pega quantidade de visitas e estado da vaqui
 					}
 				},(err,result)=>{
 					if(err) return res.send(err)
-					console.log("Visitas:"+visitas)
-					console.log("visitasDesdeUltimoAcesso:"+ultimasVisitas)
 				})
 		   	}else{
 		   		ultimasVisitas = 0;
@@ -190,8 +181,6 @@ app.post("/visita",(req,res)  =>{ //Pega quantidade de visitas e estado da vaqui
 					}
 				},(err,result)=>{
 					if(err) return res.send(err)
-					console.log("Visitas:"+visitas)
-					console.log("visitasDesdeUltimoAcesso:"+ultimasVisitas)
 					
 				})
 		   	}

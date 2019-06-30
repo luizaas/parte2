@@ -127,26 +127,21 @@ export function recuperarDadosPainel(){
 	let user;
 
 	for (var i =cookie.length - 1; i >= 0; i--) {
-		//console.log(cookie[i])
-		//console.log(cookie[i].indexOf("usuario"))
 		if(cookie[i].indexOf("usuario")!=-1){
 			user=cookie[i].split("=")
 			idUsuario=user[1]
-			console.log("USER ATUAL: "+idUsuario)
+			//console.log("USER ATUAL: "+idUsuario)
+			break
 		}
 	}	
-
-	let idMundo=url[url.length-1]
-	if(idUsuario==-1||idUsuario==undefined){
-		Dados.myPage=false;
-	}
-	else if(idUsuario==idMundo){
+	
+	let idMundo=id
+	if(idUsuario==idMundo){
 		Dados.myPage=true;
 	}
 	else{		
 		Dados.myPage=false;
 	}
-
 	if(Dados.myPage){
 		if(Dados.icon != null && Dados.icon != "null" && Dados.icon != "undefined"){
 			setPageIcon(Dados.icon);
@@ -206,7 +201,7 @@ export function recuperarDadosCena(){
 	
 	Dados.userColor=CorAlienUsuario;
 	let visitanteCadatrado=false;
-	if(idUsuario==-1||idUsuario==undefined){
+	if(idUsuario==-1||idUsuario==undefined||idUsuario==""){
 		Dados.userColor=CorAlienMundo;
 		Dados.visitorColor = "green";
 		Dados.myPage=false;
